@@ -3,9 +3,11 @@
 import RequireAuth from "@/components/require-auth";
 import { useEffect, useMemo, useState } from "react";
 import { useCmsStore } from "@/store/use-cms-store";
+import { TrashIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/solid";
 
 export default function SettingsPage() {
-  const { groups, menus, removeGroup, renameGroup, addGroup, addMenu, load } =
+  const { groups, menus, removeGroup, renameGroup, addGroup, 
+    addMenu, removeMenu, load } =
     useCmsStore();
 
   const [gName, setGName] = useState("");
@@ -59,7 +61,7 @@ export default function SettingsPage() {
                 setGName("");
               }
             }}
-            className="flex flex-col gap-3 sm:flex-row"
+            className="flex flex-col gap-2 sm:flex-row"
           >
             <input
               className="w-full border px-3 py-2"
@@ -67,8 +69,8 @@ export default function SettingsPage() {
               value={gName}
               onChange={(e) => setGName(e.target.value)}
             />
-            <button className="rounded bg-gray-900 px-4 py-2 text-white hover:opacity-90">
-              Add Group
+            <button className="flex items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 hover:bg-gray-100">
+              <PlusIcon className="h-5 w-7 text-gray-700"/>
             </button>
           </form>
 
@@ -114,23 +116,23 @@ export default function SettingsPage() {
                   ) : (
                     <>
                       <span className="font-medium">{g.name}</span>
-                      <button
-                        className="text-xs rounded px-2 py-1 hover:bg-gray-100"
-                        onClick={() =>
-                          setEditingGroup({ id: g.id, name: g.name })
-                        }
-                      >
-                        Rename
-                      </button>
                     </>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
                   <button
+                        className="text-xs rounded px-2 py-1 hover:bg-gray-100"
+                        onClick={() =>
+                          setEditingGroup({ id: g.id, name: g.name })
+                        }
+                      >
+                      <PencilIcon className="h-5 w-5" />
+                      </button>
+                  <button
                     onClick={() => removeGroup(g.id)}
                     className="text-sm text-red-600 hover:underline"
                   >
-                    Remove
+                    <TrashIcon className="h-5 w-5" />
                   </button>
                 </div>
               </li>
@@ -179,8 +181,8 @@ export default function SettingsPage() {
               value={mPath}
               onChange={(e) => setMPath(e.target.value)}
             />
-            <button className="rounded bg-gray-900 px-4 py-2 text-white hover:opacity-90">
-              Add Menu
+            <button className="flex items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 hover:bg-gray-100">
+              <PlusIcon className="h-4 w-4 text-gray-700"/>
             </button>
           </form>
         </div>
@@ -206,6 +208,14 @@ export default function SettingsPage() {
                     <div>
                       <div className="font-medium">{m.name}</div>
                       <div className="text-xs text-gray-500">{m.path}</div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => removeMenu(m.id)}
+                        className="text-sm text-red-600 hover:underline"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
                     </div>
                   </li>
                 ))}

@@ -10,6 +10,7 @@ type CmsState = {
   removeGroup: (id: string) => void;
   renameGroup: (id: string, name: string) => void;
   addMenu: (groupId: string, name: string, path: string) => void;
+  removeMenu: (id: string) => void;
   load: () => void;
 };
 
@@ -69,6 +70,10 @@ export const useCmsStore = create<CmsState>((set, get) => ({
   addMenu: (groupId, name, path) => {
     const m: Menu = { id: crypto.randomUUID(), name: name.trim(), path: path.trim(), groupId };
     const next = { groups: get().groups, menus: [...get().menus, m] };
+    persist(next); set(next);
+  },
+  removeMenu: (id) => {
+    const next = { groups: get().groups, menus: get().menus.filter((m) => m.id !== id) };
     persist(next); set(next);
   },
 }));
