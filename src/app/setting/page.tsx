@@ -5,18 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useCmsStore } from "@/store/use-cms-store";
 
 export default function SettingsPage() {
-  const { groups, menus, addGroup, load } = useCmsStore();
+  const { groups, removeGroup, renameGroup, addGroup, load } = useCmsStore();
 
   const [gName, setGName] = useState("");
+  const [editingGroup, setEditingGroup] = useState<{id: string, name: string} | null>(null);
 
   const [selectedGroup, setSelectedGroup] = useState<string>("");
-  const [mName, setMName] = useState("");
-  const [mPath, setMPath] = useState("");
-  const [editingMenu, setEditingMenu] = useState<{
-    id: string;
-    name: string;
-    path: string;
-  } | null>(null);
 
   useEffect(() => {
     load();
@@ -83,9 +77,55 @@ export default function SettingsPage() {
                 className="flex items-center justify-between rounded border px-3 py-2"
               >
                 <div className="flex items-center gap-3">
+                  {editingGroup?.id === g.id ? (
                     <>
-                        <span className="font-medium">{g.name}</span>
+                      <input
+                        className="border px-2 py-1 text-sm"
+                        value={editingGroup.name}
+                        onChange={(e) =>
+                          setEditingGroup({
+                            ...editingGroup,
+                            name: e.target.value,
+                          })
+                        }
+                      />
+                      <button
+                        className="text-sm rounded bg-gray-900 px-2 py-1 text-white"
+                        onClick={() => {
+                          renameGroup(g.id, editingGroup.name);
+                          setEditingGroup(null);
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="text-sm rounded px-2 py-1 hover:bg-gray-100"
+                        onClick={() => setEditingGroup(null)}
+                      >
+                        Cancel
+                      </button>
                     </>
+                  ) : (
+                    <>
+                      <span className="font-medium">{g.name}</span>
+                      <button
+                        className="text-xs rounded px-2 py-1 hover:bg-gray-100"
+                        onClick={() =>
+                          setEditingGroup({ id: g.id, name: g.name })
+                        }
+                      >
+                        Rename
+                      </button>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => removeGroup(g.id)}
+                    className="text-sm text-red-600 hover:underline"
+                  >
+                    Remove
+                  </button>
                 </div>
               </li>
             ))}

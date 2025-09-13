@@ -11,7 +11,7 @@ export default function HomePage() {
             <ul className="list-inside list-disc text-sm text-gray-700">
               <li>
                 Go to{" "}
-                <a className="underline" href="/settings">
+                <a className="underline" href="/setting">
                   Settings
                 </a>{" "}
                 to manage Menu Groups & Menus.
