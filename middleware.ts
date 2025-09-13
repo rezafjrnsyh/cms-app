@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
   const isAuthed = req.cookies.get("auth")?.value === "true";
   const { pathname } = req.nextUrl;
 
-  if (!isAuthed && (pathname.startsWith("/home") || pathname.startsWith("/settings"))) {
+  if (!isAuthed && (pathname.startsWith("/home") || pathname.startsWith("/setting"))) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
     url.searchParams.set("redirected", "1");
@@ -22,5 +22,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/home/:path*", "/settings/:path*"],
+  matcher: ["/", "/home/:path*", "/setting/:path*"],
 };
