@@ -11,7 +11,9 @@ type CmsState = {
   renameGroup: (id: string, name: string) => void;
   addMenu: (groupId: string, name: string, path: string) => void;
   removeMenu: (id: string) => void;
+  renameMenu: (id: string, name: string, path?: string) => void;
   load: () => void;
+  clearAll: () => void;
 };
 
 const STORAGE_KEY = "cms-state-v1";
@@ -76,4 +78,17 @@ export const useCmsStore = create<CmsState>((set, get) => ({
     const next = { groups: get().groups, menus: get().menus.filter((m) => m.id !== id) };
     persist(next); set(next);
   },
+  renameMenu: (id, name, path) => {
+    const next = {
+      groups: get().groups,
+      menus: get().menus.map((m) =>
+        m.id === id ? { ...m, name: name.trim(), path: path ? path.trim() : m.path } : m
+      ),
+    };
+    persist(next); set(next);
+  },
+  clearAll: () => {
+    const next ={groups: [], menus: []};
+    persist(next); set(next)
+  }
 }));

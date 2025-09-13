@@ -7,7 +7,7 @@ import { TrashIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/solid";
 
 export default function SettingsPage() {
   const { groups, menus, removeGroup, renameGroup, addGroup, 
-    addMenu, removeMenu, load } =
+    addMenu, removeMenu, load, renameMenu, clearAll } =
     useCmsStore();
 
   const [gName, setGName] = useState("");
@@ -19,6 +19,7 @@ export default function SettingsPage() {
   const [selectedGroup, setSelectedGroup] = useState<string>("");
   const [mName, setMName] = useState("");
   const [mPath, setMPath] = useState("");
+  const [editingMenu, setEditingMenu] = useState<{id: string, name: string, path: string} | null>(null);
 
   useEffect(() => {
     load();
@@ -39,13 +40,13 @@ export default function SettingsPage() {
       <section className="grid gap-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Settings</h1>
-          {/* <button
+          <button
           onClick={clearAll}
           className="text-sm rounded bg-red-600 px-3 py-1 text-white hover:opacity-90"
           title="Hapus semua data lokal"
         >
           Clear All
-        </button> */}
+        </button>
         </div>
 
         {/* MENU GROUPS */}
@@ -121,7 +122,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                        className="text-xs rounded px-2 py-1 hover:bg-gray-100"
+                        className="text-sm text-gray-600 hover:underline"
                         onClick={() =>
                           setEditingGroup({ id: g.id, name: g.name })
                         }
@@ -149,6 +150,10 @@ export default function SettingsPage() {
             onSubmit={(e) => {
               e.preventDefault();
               if (!selectedGroup) return;
+              if (editingMenu) {
+              renameMenu(editingMenu.id, mName || editingMenu.name, mPath || editingMenu.path);
+              setEditingMenu(null); setMName(""); setMPath(""); return;
+            }
               if (mName.trim() && mPath.trim()) {
                 addMenu(selectedGroup, mName, mPath);
                 setMName("");
@@ -210,6 +215,12 @@ export default function SettingsPage() {
                       <div className="text-xs text-gray-500">{m.path}</div>
                     </div>
                     <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => { setEditingMenu(m); setMName(m.name); setMPath(m.path); setSelectedGroup(m.groupId); }}
+                        className="text-sm text-gray-600 hover:underline"
+                      >
+                        <PencilIcon className="h-5 w-5" />
+                      </button>
                       <button
                         onClick={() => removeMenu(m.id)}
                         className="text-sm text-red-600 hover:underline"
